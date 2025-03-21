@@ -1,0 +1,26 @@
+.homeContainer{
+    height: 100vh;
+    width: 100%;
+}
+.header{
+    height: 8%;
+    border-bottom: 1px solid #D6D6D6;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 3rem;
+}
+.welcomeText{
+    /* font-size: 2rem; */
+    font-weight: bold;
+}
+.createBtn{
+    height: 60%;
+    width: 10rem;
+    border-radius: 5px;
+    border: none;
+    background: #1A5FFF;
+    color: #ffffff;
+    font-weight: 500;
+    cursor: pointer;
+}
