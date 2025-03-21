@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Home from './pages/Home/Home'
 import CreateForm from './pages/CreateForm/CreateForm'
+import { Toaster } from 'react-hot-toast'
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
       <Route path='/' element={<Home/>}/>
       <Route path='/create' element={<CreateForm/>} />
     </Routes>
+    <Toaster/>
     </BrowserRouter>
     </>
   )
