@@ -52,6 +52,7 @@
   border-radius: 4px;
   color: #A0A0A0;
   outline: none;
+  padding-left: 15px;
 }
 .addInputsBtn{
     height: 38px;
@@ -61,4 +62,95 @@
     border-radius: 6px;
     color: #ffffff;
     cursor: pointer;
+}
+.inputData{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.inputDataItem{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  position: relative;
+}
+.inputDataItem > input{
+  height: 30px;
+  width: 100%;
+  outline: none;
+  padding-left: 20px;
+  border: 1px solid #D1D5DB;
+}
+.deleteButton{
+  position: absolute;
+  right: 4px;
+  top: 33.5px;
+  cursor: pointer;
+}
+.createButton{
+  margin-top: 20px;
+  display: flex;
+  align-items: start;
+  justify-content: start;
+}
+.createButton button{
+  height: 38px;
+  width: 300px;
+  background: #1B48DA;
+  border: none;
+  border-radius: 6px;
+  color: #ffffff;
+  cursor: pointer;
+}
+.backBtn{
+  position: absolute;
+  left: 10px;
+  top: 5px;
+  font-size: 30px;
+  cursor: pointer;
+}
+.sectionContainer{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+
+}
+.sectionCreator{
+  display: flex;
+  gap: 10px;
+}
+.sectionCreator input{
+  height: 30px;
+  width: 80%;
+  padding-left: 20px;
+  border: 1px solid #d1d5db;
+  outline: none;
+}
+.sectionCreator button{
+  height: 30px;
+  width: 100px;
+  background: #1B48DA;
+  border: none;
+  border-radius: 6px;
+  color: #ffffff;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.sectionSelector{
+  display: flex;
+}
+.sectionSelector select{
+  height: 30px;
+  width: 80%;
+  border-radius: 6px;
+  outline: none;
+  padding-left: 20px;
+}
+.sectionSelector p{
+  width: 120px;
+  flex-shrink: 0;
+}
+.section h3{
+  margin: 20px 0;
 }
