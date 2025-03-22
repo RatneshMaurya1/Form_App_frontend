@@ -16,7 +16,7 @@ const Input = ({isOpen,onClose,inputValue,onSave}) => {
                 <input type="text" placeholder='Placeholder' value={inputPlaceholder} onChange={(e) => setInputPlaceholder(e.target.value)}/>
             </div>
             <div className={styles.addBtn}>
-            <button onClick={() => {onSave(inputTitle,inputPlaceholder,setInputTitle,setInputPlaceholder),onClose()}} >Add</button>
+            <button onClick={() => {onSave(inputTitle,inputPlaceholder,setInputTitle,setInputPlaceholder)}} >Add</button>
             </div>
         </div>
     </div>

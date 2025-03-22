@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import styles from "./createform.module.css";
+import React, { useState,useEffect } from "react";
+import styles from "./editform.module.css";
 import Input from "../../components/InputPopup/Input";
 import toast from "react-hot-toast";
 import deleteBtn from "../../assets/Icons.png";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useNavigate } from "react-router-dom";
-import { createForm } from "../../services";
+import { createForm, getForms } from "../../services";
 
-const CreateForm = () => {
+const EditForm = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputVaue] = useState("");
   const [sections, setSections] = useState([
@@ -146,12 +146,24 @@ const CreateForm = () => {
       toast.error(error.message || "Failed to save form.")
     }
   }
-  console.log(sections);
+
+      useEffect(() => {
+        const getFormsData = async () => {
+          try {
+            const response = await getForms();
+            setSections(response.forms.flatMap(form => form.sections));
+            setFormTitle(response.forms.map(form => (form.title)))
+          } catch (error) {
+            return console.log(error.message)
+          }
+        }
+        getFormsData()
+      },[])
   return (
     <div className={styles.createformContainer}>
       <div className={styles.createForm}>
         <div className={styles.headingWrapper}>
-          <p className={styles.heading}>Create Form</p>
+          <p className={styles.heading}>Edit Form</p>
         </div>
         <div className={styles.title}>
           <p>Title</p>
@@ -277,4 +289,4 @@ const CreateForm = () => {
   );
 };
 
-export default CreateForm;
+export default EditForm;

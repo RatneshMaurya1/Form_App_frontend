@@ -1,0 +1,68 @@
+.createformContainer {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+}
+.formCard {
+  /* height: auto; */
+  padding: 20px;
+  width: 80%;
+  border: 1px solid #ececf2;
+  border-radius: 6px;
+  box-shadow: 0px 1px 2px 0px #1018280d;
+}
+.formCard h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  line-height: 0;
+  text-align: center;
+}
+.section h4 {
+  font-size: 1.2rem;
+  margin: 20px 0;
+}
+.inputContainerWrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+/* .inputContainer label{
+   padding-bottom: 20px;
+} */
+.inputContainer input {
+  height: 30px;
+  width: 100%;
+  outline: none;
+  padding-left: 20px;
+  border: 1px solid #d1d5db;
+}
+.submitBtn {
+  margin-top: 20px;
+  display: flex;
+  align-items: start;
+  justify-content: start;
+}
+.submitBtn button {
+  height: 38px;
+  width: 300px;
+  background: #1b48da;
+  border: none;
+  border-radius: 6px;
+  color: #ffffff;
+  cursor: pointer;
+}
+.backBtn {
+  position: absolute;
+  left: 10px;
+  top: 5px;
+  font-size: 20px;
+  cursor: pointer;
+}
