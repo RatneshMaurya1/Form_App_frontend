@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 
 const Home = () => {
   const [allForms,setAllForms] = useState([])
+  const [loading,setLoading] = useState(false)
     const navigate = useNavigate()
     if (!localStorage.getItem("userId")) {
       localStorage.setItem("userId", Date.now().toString());
@@ -13,11 +14,14 @@ const Home = () => {
 
     useEffect(() => {
       const getFormsData = async () => {
+        setLoading(true)
         try {
           const response = await getForms();
           setAllForms(response.forms)
         } catch (error) {
           return console.log(error.message)
+        }finally{
+          setLoading(false)
         }
       }
       getFormsData()
@@ -51,7 +55,7 @@ const Home = () => {
                 <div className={styles.btnContainer}>
                 <button onClick={() => navigate(`/view/${form._id}`)}  className={styles.view}>View</button>
                 <button onClick={() => navigate(`/edit/${form._id}`)} className={styles.edit}>Edit</button>
-                <button onClick={() => handleDeleteForm(form._id)} className={styles.delete}>Delete</button>
+                <button disabled={loading} onClick={() => handleDeleteForm(form._id)} className={styles.delete}>{loading ? "Loading..." : "Delete"}</button>
                 </div>
               </div>
             )): <p>No forms available</p>} 

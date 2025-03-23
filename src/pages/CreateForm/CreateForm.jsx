@@ -16,6 +16,7 @@ const CreateForm = () => {
   const [selectedSection, setSelectedSection] = useState(sections[0].id);
   const [newSectionTitle, setNewSectionTitle] = useState("");
   const [formTitle, setFormTitle] = useState("");
+  const [loading,setLoading] = useState(false)
 
   const navigate = useNavigate();
 
@@ -137,6 +138,7 @@ const CreateForm = () => {
     if (sections.length === 0){
       return toast.error("Plase add at least one field.")
     }
+    setLoading(true)
     try {
       const response = await createForm(formTitle,sections)
       if(response){
@@ -145,9 +147,10 @@ const CreateForm = () => {
       }
     } catch (error) {
       toast.error(error.message || "Failed to save form.")
+    }finally{
+      setLoading(false)
     }
   }
-  console.log(sections);
   return (
     <div className={styles.createformContainer}>
       <div className={styles.createForm}>
@@ -261,7 +264,7 @@ const CreateForm = () => {
         </DragDropContext>
 
         <div className={styles.createButton}>
-          <button onClick={handleSaveForm}>Save Form</button>
+          <button disabled={loading} onClick={handleSaveForm}>{loading ? "Loading..." : "Save Form"}</button>
         </div>
 
         <Input
