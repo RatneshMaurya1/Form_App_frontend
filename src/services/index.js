@@ -36,6 +36,26 @@ export const getForms = async (userId) => {
     }
   };
 
+  export const getFormsById = async (formId) => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/getFormsById/${formId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        return response.json();
+      } else {
+        const errorResponse = await response.json();
+        throw new Error(errorResponse.message || "Something went wrong");
+      }
+    } catch (error) {
+      throw new Error(error.message || "An unexpected error occurred");
+    }
+  };
+
+
   export const deleteForm = async (formId) => {
     try {
       const response = await fetch(`${BACKEND_URL}/api/deleteForm/${formId}`, {
@@ -56,3 +76,19 @@ export const getForms = async (userId) => {
     }
   };
   
+  export const updateForm = async (formTitle,sections,formId) => {
+    try {
+        const response = await fetch(`${BACKEND_URL}/api/updateForm/${formId}`,{
+            method:"PUT",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({title:formTitle,sections})
+        })
+        if(response.ok){
+            return response.json()
+        }
+    } catch (error) {
+        throw new Error(error.message)
+    }
+}

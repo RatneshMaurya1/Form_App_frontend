@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
 import styles from "./viewform.module.css";
-import { getForms } from "../../services";
+import { getForms, getFormsById } from "../../services";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ViewForm = () => {
   const [allForms, setAllForms] = useState([]);
   const [formData, setFormData] = useState({});
   const navigate = useNavigate();
+  const {id} = useParams()
 
   useEffect(() => {
     const fetchForms = async () => {
       try {
-        const response = await getForms();
+        const response = await getFormsById(id);
         setAllForms(response.forms);
       } catch (error) {
         console.error("Error fetching forms:", error.message);

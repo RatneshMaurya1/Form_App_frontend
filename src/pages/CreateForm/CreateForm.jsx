@@ -141,6 +141,7 @@ const CreateForm = () => {
       const response = await createForm(formTitle,sections)
       if(response){
         toast.success("Form saved successfully.")
+        navigate("/")
       }
     } catch (error) {
       toast.error(error.message || "Failed to save form.")

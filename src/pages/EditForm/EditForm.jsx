@@ -1,11 +1,11 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./editform.module.css";
 import Input from "../../components/InputPopup/Input";
 import toast from "react-hot-toast";
 import deleteBtn from "../../assets/Icons.png";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import { useNavigate } from "react-router-dom";
-import { createForm, getForms } from "../../services";
+import { useNavigate, useParams } from "react-router-dom";
+import { createForm, getForms, getFormsById, updateForm } from "../../services";
 
 const EditForm = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,7 +16,7 @@ const EditForm = () => {
   const [selectedSection, setSelectedSection] = useState(sections[0].id);
   const [newSectionTitle, setNewSectionTitle] = useState("");
   const [formTitle, setFormTitle] = useState("");
-
+  const {id} = useParams();
   const navigate = useNavigate();
 
   const handleAddSection = () => {
@@ -27,7 +27,7 @@ const EditForm = () => {
       return toast.error("You can only create up to 5 sections.");
     }
     const newSection = {
-      id: Date.now(),
+      id: String(Date.now()),
       sectionName: newSectionTitle,
       inputs: [],
     };
@@ -52,11 +52,16 @@ const EditForm = () => {
     setInputTitle,
     setInputPlaceholder
   ) => {
-    if (!inputTitle.trim() || !inputPlaceholder.trim()){
-      return toast.error("Title and placeholder cannot be empty.")
+    if (!inputTitle.trim() || !inputPlaceholder.trim()) {
+      return toast.error("Title and placeholder cannot be empty.");
+    }
+    const targetSection = sections.find((s) => s.id === selectedSection);
+    if (!targetSection) {
+      toast.error("Invalid section selected");
+      return;
     }
     const newInput = {
-      id: Date.now(),
+      id: String(Date.now()),
       title: inputTitle,
       placeholder: inputPlaceholder,
       type: inputValue,
@@ -91,30 +96,17 @@ const EditForm = () => {
   const handleOnDragEnd = (result) => {
     if (!result.destination) return;
 
-    const sourceSectionId = parseInt(result.source.droppableId);
-    const destinationSectionId = parseInt(result.destination.droppableId);
+    const sourceSectionId = result.source.droppableId;
+    const destinationSectionId = result.destination.droppableId;
 
     if (sourceSectionId === destinationSectionId) {
-      setSections(
-        sections.map((section) => {
-          if (section.id === sourceSectionId) {
-            const newInputs = [...section.inputs];
-            const [movedInput] = newInputs.splice(result.source.index, 1);
-            newInputs.splice(result.destination.index, 0, movedInput);
-            return { ...section, inputs: newInputs };
-          }
-          return section;
-        })
-      );
     } else {
       let movedInput;
       const updatedSections = sections.map((section) => {
         if (section.id === sourceSectionId) {
-          movedInput = section.inputs[result.source.index];
-          return {
-            ...section,
-            inputs: section.inputs.filter((_, i) => i !== result.source.index),
-          };
+          const newInputs = [...section.inputs];
+          [movedInput] = newInputs.splice(result.source.index, 1);
+          return { ...section, inputs: newInputs };
         }
         return section;
       });
@@ -122,7 +114,9 @@ const EditForm = () => {
       setSections(
         updatedSections.map((section) => {
           if (section.id === destinationSectionId && movedInput) {
-            return { ...section, inputs: [...section.inputs, movedInput] };
+            const newInputs = [...section.inputs];
+            newInputs.splice(result.destination.index, 0, movedInput);
+            return { ...section, inputs: newInputs };
           }
           return section;
         })
@@ -130,35 +124,62 @@ const EditForm = () => {
     }
   };
 
+  useEffect(() => {
+    const getFormsData = async () => {
+      try {
+        const response = await getFormsById(id);
+        const fetchedForms = response.forms;
+
+        const fetchedSections = fetchedForms.flatMap((form) =>
+          form.sections.map((section) => ({
+            ...section,
+            id: String(section.id),
+            inputs: section.inputs.map((input) => ({
+              ...input,
+              id: String(input.id),
+            })),
+          }))
+        );
+
+        if (fetchedSections.length === 0) {
+          const defaultSection = {
+            id: String(Date.now()),
+            sectionName: "Default Section",
+            inputs: [],
+          };
+          setSections([defaultSection]);
+          setSelectedSection(defaultSection.id);
+        } else {
+          setSections(fetchedSections);
+          setSelectedSection(fetchedSections[0].id);
+        }
+
+        setFormTitle(fetchedForms[0]?.title || "");
+      } catch (error) {
+        console.error("Error fetching forms:", error);
+      }
+    };
+    getFormsData();
+  }, []);
+
   const handleSaveForm = async () => {
-    if (!formTitle.trim()){
-      return toast.error("form title cannot be empty.")
+    if (!formTitle.trim()) {
+      return toast.error("form title cannot be empty.");
     }
-    if (sections.length === 0){
-      return toast.error("Plase add at least one field.")
+    if (sections.length === 0) {
+      return toast.error("Plase add at least one field.");
     }
     try {
-      const response = await createForm(formTitle,sections)
-      if(response){
-        toast.success("Form saved successfully.")
+      const response = await updateForm(formTitle, sections,id);
+      if (response) {
+        toast.success(response.message);
+        navigate("/")
       }
     } catch (error) {
-      toast.error(error.message || "Failed to save form.")
+      toast.error(error.message || "Failed to save form.");
     }
-  }
+  };
 
-      useEffect(() => {
-        const getFormsData = async () => {
-          try {
-            const response = await getForms();
-            setSections(response.forms.flatMap(form => form.sections));
-            setFormTitle(response.forms.map(form => (form.title)))
-          } catch (error) {
-            return console.log(error.message)
-          }
-        }
-        getFormsData()
-      },[])
   return (
     <div className={styles.createformContainer}>
       <div className={styles.createForm}>
@@ -190,9 +211,7 @@ const EditForm = () => {
 
           <div className={styles.sectionSelector}>
             <p>Select Section:</p>
-            <select
-              onChange={(e) => setSelectedSection(parseInt(e.target.value))}
-            >
+            <select onChange={(e) => setSelectedSection(e.target.value)}>
               {sections.map((section) => (
                 <option key={section.id} value={section.id}>
                   {section.sectionName
